@@ -27,8 +27,13 @@ export default function Home() {
       add();
       setScore(score + 1);
       setInputValue("");
-      setTime(time + 1);
+      setTime((time) => time + 1);
     }
+  };
+  const restart = () => {
+    setLevel(0);
+    setTime(10);
+    setLevelDiff(5);
   };
 
   // LEVEL UP PROGRESS
@@ -54,12 +59,18 @@ export default function Home() {
     add();
   }, []);
 
-  setInterval(() => {
-    setTime(time - 1);
-    if (time == 0) {
-      setOpen(true);
-    }
-  }, 1000);
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      setTime(time - 1);
+      if (time == 0) {
+        setOpen(true);
+        restart();
+      }
+    }, 1000);
+    return () => {
+      clearInterval(timerId);
+    };
+  }, [time]);
   return (
     <main className="bg-green-950 w-screen h-screen">
       <div className="flex items-center gap-4 text-4xl font-medium text-orange-500 p-10">
