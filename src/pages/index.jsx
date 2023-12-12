@@ -12,6 +12,7 @@ export default function Home() {
   const [levelDiff, setLevelDiff] = useState(5);
   const [level, setLevel] = useState(10);
   const [time, setTime] = useState(10);
+  const [isStart, setIsStart] = useState(false);
 
   const add = () => {
     let firstNum = Math.floor(Math.random() * level);
@@ -22,6 +23,9 @@ export default function Home() {
     setDisplaySecondNum(secondNum);
   };
   const handleResult = (num) => {
+    if (!isStart) {
+      setIsStart(true);
+    }
     setInputValue(num.target.value);
     if (num.target.value == sumNum) {
       add();
@@ -34,6 +38,7 @@ export default function Home() {
     setLevel(0);
     setTime(10);
     setLevelDiff(5);
+    setIsStart(false);
   };
 
   // LEVEL UP PROGRESS
@@ -60,16 +65,18 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const timerId = setInterval(() => {
-      setTime(time - 1);
-      if (time == 0) {
-        setOpen(true);
-        restart();
-      }
-    }, 1000);
-    return () => {
-      clearInterval(timerId);
-    };
+    if (isStart) {
+      const timerId = setInterval(() => {
+        setTime(time - 1);
+        if (time == 0) {
+          setOpen(true);
+          restart();
+        }
+      }, 1000);
+      return () => {
+        clearInterval(timerId);
+      };
+    }
   }, [time]);
   return (
     <main className="bg-green-950 w-screen h-screen">
